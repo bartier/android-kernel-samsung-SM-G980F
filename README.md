@@ -13,15 +13,11 @@ This is the official Samsung kernel source for the Galaxy S20 (SM-G980F), with m
 
 The toolchain used for this specific build (G980FXXSFHWB1) must be set up before building:
 
-1. Download the toolchain from: https://drive.google.com/file/d/15FWoYQxdWrxgQNYbI0t-FBJ5YVtCw4oB/view?usp=sharing
-2. Extract the contents to: `SM-G980F_13_Opensource/Kernel/toolchain`
-3. The toolchain includes:
-   - Clang compiler
-   - GCC ARM64 cross-compiler
-   - Build utilities
+1. [Download the toolchain](https://drive.google.com/file/d/15FWoYQxdWrxgQNYbI0t-FBJ5YVtCw4oB/view?usp=sharing)
+2. Extract the contents to: `toolchain/ folder in the root directory of this repository`
 
 Alternatively, you can obtain the toolchain from Google's AOSP repository:
-- Source: https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/
+- [Google Source](https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/)
 - Note: Compatibility validation will be required if using this alternative source
 
 ---
@@ -32,28 +28,20 @@ Alternatively, you can obtain the toolchain from Google's AOSP repository:
 
 ## Build the Docker image
 
+Ensure you have Docker installed on your system. Then, on the root folder of this repository, execute:
+
 ```bash
 docker build --platform linux/amd64 -t kernel-builder .
+docker run --platform linux/amd64 -it --rm -v "$(pwd):/kernel" kernel-builder
 ```
 
-## Run the container with the kernel source mounted
-
-```bash
-docker run --platform linux/amd64 -it --rm -v "$(pwd)/SM-G980F_13_Opensource/Kernel:/kernel" kernel-builder
-```
-
-## Inside the container: change to the kernel directory
+## Inside the container: ensure you are in the kernel directory
 
 ```bash
 cd /kernel
 ```
 
 ## Build the kernel using the wrapper script
-
-Make the wrapper executable:
-```bash
-chmod +x build_kernel.sh
-```
 
 Run the wrapper:
 ```bash

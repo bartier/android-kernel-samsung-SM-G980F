@@ -1,9 +1,10 @@
 FROM ubuntu:22.04
 
+SHELL ["/bin/bash", "-c"]
+
 # Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install system dependencies
 RUN apt update && apt -y install \
     build-essential \
     gcc \
@@ -33,29 +34,19 @@ RUN apt update && apt -y install \
     lld \
     llvm
 
-# Install pyenv dependencies
-RUN apt -y install \
-    libreadline-dev \
-    zlib1g-dev \
-    python3-pip \
-    python-is-python3
+RUN curl https://pyenv.run | bash
 
-# Set up pyenv
-ENV PYENV_ROOT="/root/.pyenv"
-ENV PATH="$PYENV_ROOT/bin:$PATH"
+ENV PYENV_ROOT=/root/.pyenv
+ENV PATH=/root/.pyenv/bin:$PATH
 
-# Install pyenv and Python versions
-RUN curl https://pyenv.run | bash && \
-    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc && \
-    echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc && \
-    echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc && \
-    . ~/.bashrc && \
+RUN source ~/.bashrc && \
+    eval "$(pyenv init -)" && \
     pyenv install 2.7.18 && \
     pyenv install 3.12.5 && \
     pyenv global 2.7.18 3.12.5
 
-# Set working directory
-WORKDIR /kernel
+RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc && \
+    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc && \
+    echo 'eval "$(pyenv init -)"' >> ~/.bashrc
 
-# Set default command
 CMD ["/bin/bash"]
